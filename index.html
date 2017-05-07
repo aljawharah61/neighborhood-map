@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Neighborhood Map</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta charset="utf-8">
+<style>
+
+html,
+      body {
+        font-family: Arial, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        height: 100%;
+        position: relative;
+      }
+      input {
+        font-size: 12px;
+      }
+      h1 {
+        color: #525454;
+        font-size: 22px;
+        margin: 0 0 10px 0;
+        text-align: center;
+      }
+      #hide-listings,
+      #show-listings {
+        width: 48%;
+      }
+      #map {
+        bottom:0px;
+        height: 100%;
+        left: 362px;
+        position: absolute;
+        right: 0px;
+      }
+      .options-box {
+        background: #fff;
+        border: 1px solid #999;
+        border-radius: 3px;
+        height: 100%;
+        line-height: 35px;
+        padding: 10px 10px 30px 10px;
+        text-align: left;
+        width: 340px;
+      }
+
+
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="options-box"
+    <hi> Find FIXTAG </h1>
+      <div>
+
+        <input id= "show-listings" type="button" value="Show list">
+        <input id= "hide-listings" type="button" value="hide list">
+      </div>
+  <div id="map"></div>
+  <script>
+    var map;
+    var markers = [];
+    function initMap () {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 24.778267, lng: 46.689480},
+            zoom:13
+          });
+
+          var locations =[
+            {title: 'FIXTAG', location: {lat: 24.778267, lng: 46.689480 }},
+            {title: 'Starbuck', location: {lat: 24.772528, lng: 46.67298200000005}},
+            {title: 'Kosebasi', location: {lat: 24.7811093, lng: 46.69717579999997}},
+            {title: 'Steak House', location: {lat: 24.771874, lng:46.67468370000006}},
+            {title: 'Samba Bank', location: {lat: 24.7783383, lng: 46.68980529999999}},
+            {title: 'ANB Bank', location: {lat: 24.778878, lng: 46.69128669999998}}
+          ];
+
+
+          var largeInfowindow = new google.maps.InfoWindow();
+
+          for (var i = 0; i <locations.length; i++) {
+                 // Get the position from the location array.
+                 var position = locations[i].location;
+                 var title = locations[i].title;
+                 // Create a marker per location, and put into markers array.
+                 var marker = new google.maps.Marker({
+                   position: position,
+                   title: title,
+                   animation:google.maps.Animation.DROP,
+                   id: i
+                 });
+
+                    //push the marker to out array of markers.
+                    markers.push(marker);
+                    marker.addListener('click', function() {
+                    populateInfoWindow(this, largeInfowindow);
+                      });
+                      }
+              // Extend the boundaries of the map for each marker
+              //map.fitBounds(bounds);
+
+              document.getElementById('show-listings').addEventListener('click', showListings);
+              document.getElementById('hide-listings').addEventListener('click', hideListings);
+
+              //bounds.extend(markers[i].position);
+
+
+              }
+        function populateInfoWindow( marker, infowindow){
+            if (infowindow.marker!= marker){
+                infowindow.marker= marker;
+                infowindow.setContent ('<div>'+ marker.title + '</div>');
+                infowindow.open(map,marker);
+                // mack sure the marker property is cleared if infowindowis closed.
+                infowindow.addListener('closecliker',function(){
+                  infowindow.marker = null;
+                //infowindow.setMarker(null);
+        });
+      }
+    }
+    function showListings() {
+      var bounds = new google.maps.LatLngBounds();
+      // Extend the boundaries of the map for each marker and display the marker
+      for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+        bounds.extend(markers[i].position);
+      }
+      map.fitBounds(bounds);
+    }
+
+function hideListings()
+{
+
+  for (var i = 0 ; i < markers.length; i++){
+    markers[i].setMap(null);}
+}
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNX7cyrN0JAbvzLW5j8pGaE-FvNsFi29k&callback=initMap" async defer></script>
+</body>
+</html>
